@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AgendaNavioService } from './agenda-navio.service';
 import { AgendaNavioDto } from './agenda-navio.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller('agenda-navio')
 export class AgendaNavioController {

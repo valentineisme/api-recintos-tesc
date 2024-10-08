@@ -19,7 +19,7 @@ export class ExecucoesService {
             where: { processo }
         })
 
-        var datatual = foundProcesso.ultima;
+        var datatual = (foundProcesso.ultima);
 
         return (datatual);
     }

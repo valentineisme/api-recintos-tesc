@@ -8,7 +8,7 @@ export class AgendaNavioEntity {
     navio: string;
     @Column({type: 'varchar'})
     imo: string;
-    @Column({type: 'varchar'})
+    @PrimaryColumn({type: 'varchar'})
     viagem: string;
     @Column({type: 'varchar'})
     escala: string;
