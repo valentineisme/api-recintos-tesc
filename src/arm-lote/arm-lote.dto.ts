@@ -6,8 +6,3 @@ export class ArmLoteDto {
     az: string;
     dataexec?: Date;
 }
-
-
-export interface FindAllParameters{
-    dataexec: Date;
-}

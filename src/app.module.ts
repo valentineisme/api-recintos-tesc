@@ -9,11 +9,13 @@ import { AgendaNavioService } from './agenda-navio/agenda-navio.service';
 import { ArmLoteModule } from './arm-lote/arm-lote.module';
 import { AvaExtLoteModule } from './ava-ext-lote/ava-ext-lote.module';
 import { CarreLoteModule } from './carre-lote/carre-lote.module';
+import { AcessoPessoaModule } from './acesso-pessoa/acesso-pessoa.module';
+import { CredPessoaModule } from './cred-pessoa/cred-pessoa.module';
 
 @Module({
   imports: [AgendaNavioModule, DbModule, ExecucoesModule,
     ScheduleModule.forRoot(), 
-    ConfigModule.forRoot({ isGlobal: true }), ArmLoteModule, AvaExtLoteModule, CarreLoteModule
+    ConfigModule.forRoot({ isGlobal: true }), ArmLoteModule, AvaExtLoteModule, CarreLoteModule, AcessoPessoaModule, CredPessoaModule
   ],
   controllers: [],
   providers: [],
