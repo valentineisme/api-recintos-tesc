@@ -4,6 +4,8 @@ import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 export class ArmLoteEntity {
     @Column({type: 'varchar'})
     recinto: string;
+    @Column({type: 'varchar'})
+    id_movestoque: string;
     @PrimaryColumn({type: 'varchar'})
     lote: string;
     @Column({type: 'numeric'})
