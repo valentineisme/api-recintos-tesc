@@ -5,7 +5,7 @@ export class GeracaoLoteEntity {
 
     
     @PrimaryColumn({type: 'nvarchar'})
-    id_movestoque: Date;
+    id_movestoque: string;
     @PrimaryColumn({type: 'nvarchar'})
     chave: string;
     @Column({type: 'decimal'})

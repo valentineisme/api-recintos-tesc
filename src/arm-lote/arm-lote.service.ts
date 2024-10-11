@@ -7,20 +7,27 @@ import { ArmLoteEntity } from 'src/db/entities/arm-lote.entity';
 import { ExecucoesService } from 'src/execucoes/execucoes.service';
 import { ArmLoteDto } from './arm-lote.dto';
 import { firstValueFrom } from 'rxjs';
+import { ControleLoteEntity } from 'src/db/entities/controle-lote.entity';
+import { GeracaoLoteService } from 'src/geracao-lote/geracao-lote.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ArmLoteService {
     constructor(
         @InjectRepository(ArmLoteEntity)
         private readonly armLoteRepository: Repository<ArmLoteEntity>,
+        @InjectRepository(ControleLoteEntity)
+        private readonly controleLoteRepository: Repository<ControleLoteEntity>,
         private readonly execucaoService: ExecucoesService,
+        private readonly gerLoteService: GeracaoLoteService,
+        private readonly configService: ConfigService,
         private readonly httpService: HttpService
     ) { }
 
     async findAll(): Promise<ArmLoteDto[]> {
 
         const dataUpdate = new Date();
-      
+
         const armFound = await this.armLoteRepository.find({
             where: {
                 data_exec : Between (await this.execucaoService.findByProcesso('armLote'),dataUpdate)
@@ -28,8 +35,13 @@ export class ArmLoteService {
         });
 
         await this.execucaoService.update('armLote', dataUpdate);
-
+        
         for (var i = 0; i != armFound.length; i++) {
+
+            var controleLote = await this.findLoteControle(armFound[i].lote);
+            if (controleLote == false){
+                await this.gerLoteService.findAll(armFound[i].id_movestoque);
+            }
 
             // const headers = {
             //     Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODUxMDgzNjMsImV4cCI6ODY0MDAwMTY4NTAyMTk2M30.bV7hekE9peqMmcelOtelNbC31azbUnuev-x3IsoEf-8`,  
@@ -43,9 +55,26 @@ export class ArmLoteService {
         return armFound.map(ArmLoteEntity => this.mapEntityDto(ArmLoteEntity));
     }
 
+    async findLoteControle(lote: string): Promise<boolean> {
+        const foundControle = await this.controleLoteRepository.findOne({
+            where: { lote }
+        })
+        this.insertLoteControle(lote);
+        return !!foundControle;
+    }
+
+    async insertLoteControle(lote: string){
+        const newLote = new ControleLoteEntity();
+
+        newLote.criacao = new Date();
+        newLote.lote = lote;
+
+        await this.controleLoteRepository.save(newLote);
+    }
+
     private mapEntityDto(armLoteEntity: ArmLoteEntity): ArmLoteDto {
         return {
-            recinto: armLoteEntity.recinto,
+            recinto: this.configService.get<string>('TESC'),
             lote: armLoteEntity.lote,
             qtde: armLoteEntity.qtde,
             az: armLoteEntity.az
